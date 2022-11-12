@@ -49,13 +49,20 @@ public class StudentLoginActivity extends Activity implements View.OnClickListen
                 String mobileNumber = etMobileNumber.getText().toString();
                 String password = etPassword.getText().toString();
 
-                boolean isLoggedIN = mDbHelper.loginValidation(mobileNumber,password);
-                if (isLoggedIN){
-                    Intent loginIntent = new Intent(this,StudentDashBoard.class);
-                    startActivity(loginIntent);
-                }else{
-                    Toast.makeText(this,"MobileNumber & Password is incorrect",Toast.LENGTH_SHORT).show();
+                if (mobileNumber.isEmpty()) {
+                    Toast.makeText(this, "Please Enter MobileNumber ", Toast.LENGTH_SHORT).show();
+                } else if (password.isEmpty()) {
+                    Toast.makeText(this, "Please Enter Password", Toast.LENGTH_SHORT).show();
+                } else {
+                    boolean isLoggedIN = mDbHelper.loginValidation(mobileNumber, password);
+                    if (isLoggedIN) {
+                        Intent loginIntent = new Intent(this, StudentDashBoard.class);
+                        startActivity(loginIntent);
+                    } else {
+                        Toast.makeText(this, "MobileNumber & Password is incorrect", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
 
                 break;
             case R.id.tvCancel:

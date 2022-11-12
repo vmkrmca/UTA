@@ -53,7 +53,19 @@ public class StudentRegisterActivity extends Activity implements View.OnClickLis
                     String mobileNumber = etMobileNumber.getText().toString();
                     String emailAddress = etEmailAddress.getText().toString();
 
-                    if (password.equals(cPassword)) {
+                    if (firstName.isEmpty()) {
+                        Toast.makeText(this,"Please Enter First Name",Toast.LENGTH_SHORT).show();
+                    }else if (lastName.isEmpty()){
+                        Toast.makeText(this,"Please Enter Last Name",Toast.LENGTH_SHORT).show();
+                    } else if (mobileNumber.isEmpty()){
+                        Toast.makeText(this,"Please Enter MobileNumber",Toast.LENGTH_SHORT).show();
+                    } else if (password.isEmpty()){
+                        Toast.makeText(this,"Please Enter Password",Toast.LENGTH_SHORT).show();
+                    } else if (cPassword.isEmpty()){
+                        Toast.makeText(this,"Please Enter Confirm Password",Toast.LENGTH_SHORT).show();
+                    }  else if (emailAddress.isEmpty()){
+                        Toast.makeText(this,"Please Enter Email Address",Toast.LENGTH_SHORT).show();
+                    } else if (password.equals(cPassword)) {
 
                         Student mStudent = new Student();
                         mStudent.setFirstName(firstName);
