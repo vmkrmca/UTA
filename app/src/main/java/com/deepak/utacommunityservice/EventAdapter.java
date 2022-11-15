@@ -20,10 +20,13 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
 
     ArrayList<Event> mEventArrayList = null;
     Context mContext;
+    RequestEventClickListener mRequestEventClickListener;
 
-    public EventAdapter(Context context,ArrayList<Event> eventArrayList) {
+
+    public EventAdapter(Context context,ArrayList<Event> eventArrayList,RequestEventClickListener requestEventClickListener) {
         this.mContext = context;
         this.mEventArrayList = eventArrayList;
+        this.mRequestEventClickListener = requestEventClickListener;
     }
 
     @NonNull
@@ -44,6 +47,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
         Bitmap mBitmap = getImage(mEventArrayList.get(position).eventImage);
         BitmapDrawable bitmapDrawable = new BitmapDrawable(mContext.getResources(), mBitmap);
         holder.ivImage.setBackground(bitmapDrawable);
+
+        holder.tvRequestEvent.setOnClickListener(v -> mRequestEventClickListener.onRequestClick(mEventArrayList.get(position)));
     }
 
     public static Bitmap getImage(byte[] image) {
@@ -57,7 +62,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView tvEventTitle,tvEventDescription,tvEventDate,tvEventTime;
+        TextView tvRequestEvent,tvEventTitle,tvEventDescription,tvEventDate,tvEventTime;
         ImageView ivImage;
 
 
@@ -69,6 +74,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
         tvEventDate = itemView.findViewById(R.id.tvEventDate);
         tvEventTime = itemView.findViewById(R.id.tvEventTime);
         ivImage = itemView.findViewById(R.id.ivImage);
+        tvRequestEvent = itemView.findViewById(R.id.tvRequestEvent);
     }
 }
 

@@ -29,6 +29,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String EVENT_TIME = "EventTime";
     public static final String EVENT_IMAGE = "EventImage";
 
+    public static final String REQUEST_EVENT_TBL = "RequestEventTBL";
+
 
     SQLiteDatabase db;
     public DBHelper(@Nullable Context context) {
@@ -37,8 +39,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         db.execSQL("create table StudentTBL(mobileNumber TEXT PRIMARY KEY,firstName TEXT,lastName TEXT,emailAddress TEXT,password TEXT)");
         db.execSQL("create table EventTBL(EventTitle TEXT,EventDescription TEXT,EventDate TEXT,EventTime TEXT,EventImage BLOB)");
+        db.execSQL("create table RequestEventTBL(emailAddress TEXT,mobileNumber TEXT,eventTitle TEXT,eventDate TEXT,eventTime TEXT)");
     }
 
     @Override
@@ -96,6 +100,19 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.insert(TBL_NAME,null,mContentValues);
     }
 
+    public long insertRequestEventDetails(String emailAddress,String mobileNumber,String eventTitle,String eventDate,String eventTime) {
+
+        db = this.getWritableDatabase();
+        ContentValues mContentValues = new ContentValues();
+        mContentValues.put("emailAddress",emailAddress);
+        mContentValues.put("mobileNumber",mobileNumber);
+        mContentValues.put("eventTitle",eventTitle);
+        mContentValues.put("eventDate",eventDate);
+        mContentValues.put("eventTime",eventTime);
+
+        return db.insert(REQUEST_EVENT_TBL,null,mContentValues);
+    }
+
     public boolean loginValidation(String mobileNumber,String password) {
 
         db = this.getReadableDatabase();
@@ -106,5 +123,46 @@ public class DBHelper extends SQLiteOpenHelper {
             isLoggedIn = true;
         }
         return isLoggedIn;
+    }
+
+    public Student readDataFromMobileNumber(String mobileNumber) {
+
+        Student mStudent = new Student();
+        db = this.getReadableDatabase();
+        Cursor mCursor = db.rawQuery("select * from StudentTBL where mobileNUmber=?",new String[]{mobileNumber});
+
+        if (mCursor !=null && mCursor.getCount() >0 && mCursor.moveToFirst()) {
+
+                    mStudent.setFirstName(mCursor.getString(mCursor.getColumnIndexOrThrow(COL_FIRST_NAME)));
+                    mStudent.setLastName(mCursor.getString(mCursor.getColumnIndexOrThrow(COL_LAST_NAME)));
+                    mStudent.setEmailAddress(mCursor.getString(mCursor.getColumnIndexOrThrow(COL_EMAIL_ADDRESS)));
+            }
+
+        return mStudent;
+    }
+
+
+    public ArrayList<EventRequest> readEventRequestDetails() {
+
+        ArrayList<EventRequest> mEventArrayList = new ArrayList<>();
+        db = this.getReadableDatabase();
+        Cursor mCursor = db.rawQuery("select * from RequestEventTBL",null);
+        if (mCursor !=null && mCursor.getCount() >0) {
+            if (mCursor.moveToFirst()){
+                do {
+                    EventRequest mEvent = new EventRequest();
+                    mEvent.setEmailAddress(mCursor.getString(mCursor.getColumnIndexOrThrow("emailAddress")));
+                    mEvent.setEventTitle(mCursor.getString(mCursor.getColumnIndexOrThrow("eventTitle")));
+                    mEvent.setEventDate(mCursor.getString(mCursor.getColumnIndexOrThrow("eventDate")));
+                    mEvent.setEventTime(mCursor.getString(mCursor.getColumnIndexOrThrow("eventTime")));
+                    mEvent.setMobileNumber(mCursor.getString(mCursor.getColumnIndexOrThrow("mobileNumber")));
+                    mEventArrayList.add(mEvent);
+
+                }while (mCursor.moveToNext());
+            }
+        }
+        return mEventArrayList;
+
+
     }
 }

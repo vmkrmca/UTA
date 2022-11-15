@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -13,9 +14,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     TextView tvAdmin,tvStudent;
 
+    String mobileNumber;
+    SharedPreferences mSharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         tvAdmin = findViewById(R.id.tvAdmin);
@@ -32,7 +37,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             case R.id.tvStudent: {
 
-                Intent intent = new Intent(this,StudentLoginActivity.class);
+                mSharedPreferences = getSharedPreferences("StudentPref",MODE_PRIVATE);
+                mobileNumber = mSharedPreferences.getString("MOBILE","");
+
+                Intent intent;
+                if (mobileNumber != null && !mobileNumber.isEmpty()) {
+                    intent = new Intent(this, StudentDashBoard.class);
+                }else{
+                    intent = new Intent(this, StudentLoginActivity.class);
+                }
                 startActivity(intent);
 
                 break;
